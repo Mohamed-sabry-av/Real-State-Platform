@@ -39,9 +39,11 @@ exports.login = async (req, res) => {
     }
 
     const age = 1000 * 60 * 60 * 24 * 7;
+    const isAdmin = false;
     const token = jwt.sign(
       {
         id: user.id,
+        isAdmin,
       },
       process.env.JWT_SECRET,
       { expiresIn: age }

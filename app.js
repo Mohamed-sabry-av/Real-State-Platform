@@ -15,9 +15,11 @@ connectDB();
 // Routes
 const PostRoute = require("./src/routes/post.route");
 const authRoute = require("./src/routes/auth.route")
+const testRoute = require("./src/routes/test.route")
 
 app.use("/post", PostRoute);
 app.use("/auth", authRoute);
+app.use("/test", testRoute)
 
 // Root route
 // app.get("/", (req, res) => {
