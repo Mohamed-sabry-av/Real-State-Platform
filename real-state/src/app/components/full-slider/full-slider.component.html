@@ -1,0 +1,15 @@
+<div class="fullSlider">
+    <div class="close" (click)="onClose()">
+        <img src="images/close.png" alt="">
+    </div>
+    <div class="arrow" (click)="prev()">
+        <img class="prev" src="images/arrow.png" alt="">
+
+    </div>
+    <div class="imgContainer">
+        <img [src]="image" alt="">
+    </div>
+    <div class="arrow" (click)="next()">
+        <img class="next" src="images/arrow.png" alt="">
+    </div>
+</div>

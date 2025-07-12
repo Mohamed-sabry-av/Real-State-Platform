@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 // Define interfaces for type safety
 interface Apartment {
@@ -170,12 +171,12 @@ export class ProductsService {
     return this.listData;
   }
 
-  getSinglePostData(): SinglePost {
-    return this.singlePostData;
-  }
+ getSinglePostData(): Observable<SinglePost> {
+  return of(this.singlePostData);
+}
 
-  getUserData(): User {
-    return this.userData;
+  getUserData():Observable <User> {
+    return of( this.userData);
   }
 
   // Optional: Method to get a specific apartment by ID

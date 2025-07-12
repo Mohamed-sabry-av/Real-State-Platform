@@ -1,8 +1,35 @@
 <div class="singlePage">
     <div class="details">
-
+        <div class="wrapper">
+            @if (post | async; as p) {
+            <app-slider [images]="p.images" ></app-slider>
+            <div class="info">
+                @if (user | async; as u) {
+                <div class="top">
+                    <div class="post">
+                        <div class="postTitle">
+                            <h1>{{ p.title }}</h1>
+                            <div class="address">
+                                <img src="/images/pin.png" alt="" />
+                                <span>{{ p.address }}</span>
+                            </div>
+                            <h2 class="price">$ {{ p.price }}</h2>
+                        </div>
+                    </div>
+                    <div class="user">
+                        <img [src]="u.img" alt="" />
+                        <span class="name">{{ u.name }}</span>
+                    </div>
+                </div>
+                <div class="bottom">
+                    {{ p.description }}
+                </div>
+                }
+            </div>
+        }
+        </div>
     </div>
     <div class="features">
-        
+        <div class="wrapper"></div>
     </div>
 </div>

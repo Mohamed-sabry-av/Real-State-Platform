@@ -12,6 +12,8 @@ import { FilterComponent } from './components/filter/filter.component';
 import { CardComponent } from './components/card/card.component';
 import { MapComponent } from './components/map/map.component';
 import { SinglePostComponent } from './pages/single-post/single-post.component';
+import { SliderComponent } from './components/slider/slider.component';
+import { FullSliderComponent } from './components/full-slider/full-slider.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,10 @@ import { SinglePostComponent } from './pages/single-post/single-post.component';
     FilterComponent,
     CardComponent,
     MapComponent,
-    SinglePostComponent  ],
+    SinglePostComponent,
+    SliderComponent,
+    FullSliderComponent,
+  ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [],
   bootstrap: [AppComponent],
