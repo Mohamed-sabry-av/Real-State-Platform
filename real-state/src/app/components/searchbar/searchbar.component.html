@@ -1,0 +1,33 @@
+<div class="searchBar">
+  <div class="type">     
+    <button 
+      *ngFor="let type of types" 
+      (click)="switchType(type)" 
+      [ngClass]="{'active': query.type === type}"
+    >
+      {{ type }}
+    </button>
+  </div>
+  <form>
+    <input type="text" name="location" placeholder="City Location" [(ngModel)]="query.location" />
+    <input
+      type="number"
+      name="minPrice"
+      min="0"
+      max="10000000"
+      placeholder="Min Price"
+      [(ngModel)]="query.minPrice"
+    />
+    <input
+      type="number"
+      name="maxPrice"
+      min="0"
+      max="10000000"
+      placeholder="Max Price"
+      [(ngModel)]="query.maxPrice"
+    />
+    <button>
+      <img src="/images/search.png" alt="" />
+    </button>
+  </form>
+</div>

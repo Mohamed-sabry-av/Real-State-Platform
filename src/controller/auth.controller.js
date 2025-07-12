@@ -27,7 +27,7 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    console.log(user.password);
+    // console.log(user.password);
     if (!user) {
       res.status(400).json({ error: "User does not exist" });
     }

@@ -1,0 +1,37 @@
+<div class="card">
+    <div class="imgContainer">
+        <img [src]="apartment?.img" alt="">
+    </div>
+    <div class="textContainer">
+        <h2 class="title">
+            {{apartment?.title}}
+        </h2>
+        <p class="address">
+            <img src="images/pin.png" alt="">
+            <span>{{apartment?.address}}</span>
+        </p>
+        <p class="price">
+            <span>$ {{apartment?.price}}</span>
+        </p>
+        <div class="botton">
+            <div class="features">
+                <div class="feature">
+                    <img src="images/bed.png" alt="">
+                    <span>{{apartment?.bedroom}} bedroom</span>
+                </div>
+                <div class="feature">
+                    <img src="images/bath.png" alt="">
+                    <span>{{apartment?.bathroom}} bathroom</span>
+                </div>
+            </div>
+            <div class="icons">
+                <div class="icon">
+                    <img src="images/save.png" alt="">
+                </div>
+                <div class="icon">
+                    <img src="images/chat.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

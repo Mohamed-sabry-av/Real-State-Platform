@@ -1,0 +1,116 @@
+@import "../../styles/responsive.scss";
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100px;
+
+  a {
+    transition: all 0.4s ease;
+
+    @include small {
+      display: none;
+    }
+
+    &:hover {
+      scale: 1.5em;
+    }
+  }
+
+  .left {
+    flex: 3;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+  }
+  .right {
+    flex: 2;
+  }
+  .logo {
+    font-weight: bold;
+    font-size: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    img {
+      width: 28px;
+    }
+    span {
+      @include medium {
+        display: none;
+      }
+      @include small {
+        display: initial;
+      }
+    }
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+    background-color: #fcf5f3;
+    height: 100%;
+    text-decoration: none;
+
+    @include medium {
+      background-color: transparent;
+    }
+
+    a {
+      padding: 12px 24px;
+      margin: 20px;
+    }
+    .sign-up {
+      background-color: #fece51;
+      border-radius: 10px;
+    }
+
+    .menuIcon {
+      display: none;
+      z-index: 2;
+
+      @include small {
+        display: inline;
+      }
+      img {
+        width: 28px;
+        cursor: pointer;
+      }
+    }
+
+    .menu {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      background-color: black;
+      color: white;
+      height: 100vh;
+      width: 50%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 19px;
+      transition: all 0.5s ease-in-out;
+      z-index: 1;
+
+      @include small {
+        display: flex;
+      }
+
+      &.active {
+        right: 0;
+      }
+
+      @include small {
+        a {
+          display: inline;
+        }
+      }
+    }
+  }
+}
