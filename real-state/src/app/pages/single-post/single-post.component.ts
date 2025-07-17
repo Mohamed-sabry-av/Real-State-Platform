@@ -26,6 +26,7 @@ export class SinglePostComponent {
 
   getPost() {
     this.post = this.postService.getSinglePostData();
+  this.post.subscribe(p => console.log('Post data:', p));
   }
 
   getUser(){

@@ -1,90 +1,137 @@
 const Post = require("../models/post.model");
+const PostDetail = require("../models/postDetail.model");
+const PostType = require("../models/type.model");
 
-exports.getPosts = async (res, req) => {
+exports.getPosts = async (req, res) => {
   try {
-    const posts = await Post.find().populate("postDetail");
+    const posts = await Post.find().populate("postDetail").populate("postType");
+
     res.status(200).json(posts);
   } catch (err) {
     res.status(400).json({ message: "Failed to get Post" });
   }
 };
-exports.getPost = async (res, req) => {
+exports.getPost = async (req, res) => {
   const id = req.params;
   try {
-    const posts = await Post.findById({
-      where: {
-        id: id,
-      },
-      // include: {
-      //   postDetail: true,
-      // },
-    });
-    res.status(200).json(posts);
+    const post = await Post.findById(req.params.id).populate([
+      "postDetail",
+      "postType",
+    ]);
+
+    if (!post) return res.status(404).json({ message: "Post not found" });
+    res.status(200).json(post);
   } catch (err) {
     res.status(400).json({ message: "Failed to get Post" });
   }
 };
-exports.updatePost = async (res, req) => {
+exports.updatePost = async (req, res) => {
+  const id = req.params.id;
+  const body = req.body;
+  const tokenUserId = req.userId;
+
   try {
-    res.status(200).json();
+    // Find the post and check if it exists
+    const post = await Post.findById(id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    // Check if the user is authorized to update this post
+    if (post.userId.toString() !== tokenUserId) {
+      return res
+        .status(403)
+        .json({ message: "Forbidden: You can only update your own posts" });
+    }
+
+    // Handle post type update if provided
+    let postTypeId = post.postType;
+    if (body.type && typeof body.type === "string") {
+      let postType = await PostType.findOne({ name: body.type });
+      if (!postType) {
+        postType = await PostType.create({ name: body.type });
+      }
+      postTypeId = postType._id;
+    }
+
+    // Handle post details update if provided
+    let postDetailId = post.postDetail;
+    if (body.postDetail) {
+      // Update existing postDetail document
+      await PostDetail.findByIdAndUpdate(post.postDetail, body.postDetail);
+    }
+
+    // Update the post with new data
+    const updatedPost = await Post.findByIdAndUpdate(
+      id,
+      {
+        ...body,
+        postType: postTypeId,
+        postDetail: postDetailId,
+        // Don't update userId as it should remain the same
+      },
+      { new: true } // Return the updated document
+    )
+      .populate("postDetail")
+      .populate("postType");
+
+    res.status(200).json(updatedPost);
   } catch (err) {
-    res.status(400).json({ message: "Failed to get Post" });
+    console.error(err);
+    res.status(400).json({ message: err.message });
   }
 };
-exports.deletePost = async (res, req) => {
+
+exports.deletePost = async (req, res) => {
   const id = req.params.id;
   const tokenUserId = req.userId;
+
   try {
-    const post = await Post.findById({
-      where: {
-        id: id,
-      },
-    });
-    if (post.userId !== tokenUserId) {
+    const post = await Post.findById(id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+    if (post.userId.toString() !== tokenUserId) {
       return res.status(403).json({ message: "Forbidden" });
     }
-    res.status(200).json();
+
+    await PostDetail.findByIdAndDelete(post.postDetail);
+
+    await Post.findByIdAndDelete(id);
+    res.status(200).json({ message: "Post deleted successfully" });
   } catch (err) {
-    res.status(400).json({ message: "Failed to get Post" });
+    res.status(400).json({ message: "Failed to delete Post" });
   }
 };
-exports.addPost = async (res, req) => {
-  const { postDetail, ...postData } = req.body;
-  const tokenUserId = req.userId;
+
+exports.addPost = async (req, res) => {
+  const body = req.body;
+  const userIdToken = req.userId;
 
   try {
-    let postDetailId;
-    if (postDetail) {
-      const newPostDetail = await postDetail.create(postDetail);
-      postDetailId = newPostDetail._id;
+    if (!userIdToken) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: No user ID provided" });
     }
+    if (!body.type || typeof body.type !== "string") {
+      return res.status(400).json({ message: "Invalid type provided" });
+    }
+    let postType = await PostType.findOne({ name: body.type });
+    if (!postType) {
+      postType = await PostType.create({ name: body.type });
+    }
+    const postDetail = await PostDetail.create(body.postDetail);
     const newPost = await Post.create({
-      ...postData,
-      userId:tokenUserId,
-      postDetail:postDetail
-    })
-    const populatedPost = await Post.findById(newPost._id).populate("postDetail");
-    res.status(200).json(populatedPost);
+      ...body,
+      userId: userIdToken,
+      postDetail: postDetail._id,
+      postType: postType._id,
+    });
+
+    const fullPost = await Post.findById(newPost._id)
+      .populate("postDetail")
+      .populate("postType");
+
+    res.status(201).json(fullPost);
   } catch (err) {
-    res.status(400).json({ message: "Failed to get Post" });
+    console.error(err);
+    res.status(400).json({ message: err.message });
   }
 };
-
-// exports.addPost = async (res,req)=>{
-//   const body = req.body;
-//   const tokenUserId = req.userId;
-//   try{
-//     const newPost = await Post.create({
-//       data:{
-//         ...body.postData,
-//         userId: tokenUserId,
-//         postDetail:{
-//           create: body.postDetail,
-//         },
-//       },
-//     })
-//     res.status(200).json(newPost)
-//   } catch(err){
-//     res.status(400).json({error:err.{message})
-//   }
-// }}

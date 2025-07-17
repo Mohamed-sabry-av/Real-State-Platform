@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -23,14 +23,20 @@ import { info, Apartment } from '../../interfaces/products';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements AfterViewInit {
   @Input() apartments: Apartment[] = [];
+  @Input() latitude?: number;
+  @Input() longitude?: number;
+
   map!: L.Map;
   markersLayer!: L.LayerGroup;
 
-  ngOnInit(): void {
+   ngAfterViewInit(): void {
     this.initMap();
   }
+  // ngOnInit(): void {
+  //   this.initMap();
+  // }
 
   private initMap(): void {
     this.map = L.map('map').setView([0, 0], 13);
@@ -41,27 +47,37 @@ export class MapComponent implements OnInit {
     }).addTo(this.map);
 
     this.markersLayer = L.layerGroup().addTo(this.map);
-    this.addAllMarkers();
+
+    if (this.latitude !== undefined && this.longitude !== undefined) {
+      this.addSingleMarker(this.latitude, this.longitude);
+    } else {
+      this.addAllMarkers();
+    }
   }
 
-  private addAllMarkers() {
+  addSingleMarker(lat: number, lng: number) {
+    const marker = L.marker([lat, lng])
+      .addTo(this.markersLayer)
+      .bindPopup('Location')
+      .openPopup();
+
+    this.map.setView([lat, lng]);
+  }
+
+ private addAllMarkers() {
     if (!this.apartments || this.apartments.length === 0) {
       return;
     }
     const markers: L.Marker[] = [];
-    const validApartments: Apartment[] = [];
-
     this.apartments.forEach((apartment) => {
       const lat = apartment.latitude;
+      console.log(lat)
       const lng = apartment.longitude;
-
       if (lat && lng) {
         const marker = L.marker([lat, lng])
           .bindPopup(this.createPopupContent(apartment))
           .addTo(this.markersLayer);
-
         markers.push(marker);
-        validApartments.push(apartment);
       }
     });
 
@@ -69,12 +85,8 @@ export class MapComponent implements OnInit {
       const group = L.featureGroup(markers);
       this.map.fitBounds(group.getBounds(), { padding: [20, 20] });
     }
-
-    // L.marker([lat!, lng!])
-    //   .addTo(this.map)
-    //   .bindPopup('Default Location')
-    //   .openPopup();
   }
+
 
   private createPopupContent(apartment: Apartment): string {
     return `

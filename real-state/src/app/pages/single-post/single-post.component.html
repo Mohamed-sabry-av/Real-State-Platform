@@ -2,7 +2,7 @@
     <div class="details">
         <div class="wrapper">
             @if (post | async; as p) {
-            <app-slider [images]="p.images" ></app-slider>
+            <app-slider [images]="p.images"></app-slider>
             <div class="info">
                 @if (user | async; as u) {
                 <div class="top">
@@ -26,10 +26,93 @@
                 </div>
                 }
             </div>
-        }
+            }
         </div>
     </div>
     <div class="features">
-        <div class="wrapper"></div>
+        <div class="wrapper">
+            <p class="title">General</p>
+            <div class="listVertical">
+                <div class="feature">
+                    <img src="/images/utility.png" alt="">
+                    <div class="featureText">
+                        <span>Utilities</span>
+                        <p>Renter is responsible</p>
+                    </div>
+                </div>
+                <div class="feature">
+                    <img src="/images/pet.png" alt="">
+                    <div class="featureText">
+                        <span>Pets policy</span>
+                        <p>Pats allowed</p>
+                    </div>
+                </div>
+                <div class="feature">
+                    <img src="/images/fee.png" alt="">
+                    <div class="featureText">
+                        <span>Propery Fees</span>
+                        <p>Must have 3x the rent in total household income</p>
+                    </div>
+                </div>
+            </div>
+            <p class="title">Sizes</p>
+            <div class="sizes">
+
+                <div class="size">
+                    <img src="/images/size.png" alt="">
+                    <span>80sqft</span>
+                </div>
+                <div class="size">
+                    <img src="/images/bed.png" alt="">
+                    <span>2 rooms</span>
+                </div>
+                <div class="size">
+                    <img src="/images/bath.png" alt="">
+                    <span>1 bathroom</span>
+                </div>
+            </div>
+
+
+            <p class="title">Nearby Places</p>
+            <div class="listHorizontal">
+                <div class="feature">
+                    <img src="/images/school.png" alt="">
+                    <div class="featureText">
+                        <span>School</span>
+                        <p>250m away</p>
+                    </div>
+                </div>
+                <div class="feature">
+                    <img src="/images/bus.png" alt="">
+                    <div class="featureText">
+                        <span>Bus Stop</span>
+                        <p>100m away</p>
+                    </div>
+                </div>
+                <div class="feature">
+                    <img src="/images/fee.png" alt="">
+                    <div class="featureText">
+                        <span>Restaurant</span>
+                        <p>200m away</p>
+                    </div>
+                </div>
+            </div>
+            <p class="title">Location</p>
+            <div class="mapContainer" *ngIf="post | async as p">
+                <app-map [latitude]="p.latitude" [longitude]="p.longitude"></app-map>
+            </div>
+
+
+            <div class="buttons">
+                <button>
+                    <img src="/images/save.png" alt="">
+                    Save the place
+                </button>
+                <button>
+                    <img src="/images/chat.png" alt="">
+                    Contact the owner
+                </button>
+            </div>
+        </div>
     </div>
 </div>

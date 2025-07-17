@@ -1,14 +1,12 @@
 const mongoose = require("mongoose");
 
 const typeSchema = new mongoose.Schema({
-    buy:{
-        type:String,
-        required:true
-    },
-    rent:{
-        type:String,
-        required:true
-    }
+  name: {
+    type: String,
+    required: true,
+        lowercase: true,
+
+  },
 });
 
-module.exports = mongoose.model("type", typeSchema);
+module.exports = mongoose.model("Type", typeSchema);

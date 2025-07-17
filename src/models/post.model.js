@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+  const mongoose = require("mongoose");
 
 const PostSchema = new mongoose.Schema({
   title: {
@@ -52,7 +52,7 @@ const PostSchema = new mongoose.Schema({
   postType: { // Renamed from `type` to avoid reserved keyword
     type: mongoose.Schema.Types.ObjectId,
     ref: "Type", // Reference to the Type model
-    required: true,
+    required: true
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId, // Assuming it references a User model

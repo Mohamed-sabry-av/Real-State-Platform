@@ -17,16 +17,17 @@ const PostRoute = require("./src/routes/post.route");
 const authRoute = require("./src/routes/auth.route")
 const testRoute = require("./src/routes/test.route")
 const userRoute = require("./src/routes/user.route")
+const chatRoute = require("./src/routes/chat.route")
+const messageRoute = require("./src/routes/message.route")
 
 app.use("/post/", PostRoute);
 app.use("/auth", authRoute);
 app.use("/test", testRoute);
-app.use("/user/",userRoute)
+app.use("/user/", userRoute);
+app.use("/chat", chatRoute);
+app.use("/message", messageRoute);
 
-// Root route
-// app.get("/", (req, res) => {
-//   res.status(200).send("Welcome to Engineering Platform API");
-// });
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

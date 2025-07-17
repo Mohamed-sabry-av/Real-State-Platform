@@ -43,6 +43,10 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  savedPosts:{
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Post",
+  }
 });
 
 // Explicitly define unique indexes
