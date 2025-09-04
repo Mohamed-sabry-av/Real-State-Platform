@@ -1,0 +1,146 @@
+<div class="profile-container">
+  <div class="profile-content" *ngIf="!isLoading; else loadingTemplate">
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-avatar-container">
+        <div class="profile-avatar">
+          <img [src]="imagePreviewUrl || '/images/default-avatar.svg'" alt="Profile Picture">
+          <div class="avatar-overlay">
+            <label for="avatar-upload" class="upload-icon">
+              <i class="fas fa-camera"></i> Change
+            </label>
+            <input type="file" id="avatar-upload" accept="image/*" (change)="onImageSelected($event)"
+              style="display: none;">
+          </div>
+        </div>
+        @if(selectedImage){
+          <button  class="remove-image-btn" (click)="removeImage()">
+            <i class="fas fa-times"></i> X
+          </button>
+          
+          <button  type="submit" class="update-btn profile-update-btn" [disabled]="isUpdating"
+          (click)="updateProfile()">
+          <span *ngIf="!isUpdating">Update Profile</span>
+          <span *ngIf="isUpdating">Updating...</span>
+        </button>
+      }
+
+      </div>
+
+
+      <div class="profile-info">
+        <h2>{{ user?.name }}</h2>
+        <p>{{ user?.email }}</p>
+        <p class="member-since">Member since {{ user?.createdAt | date:'mediumDate' }}</p>
+      </div>
+    </div>
+
+    <!-- Profile Tabs -->
+    <div class="profile-tabs">
+      <div class="tab" [class.active]="selectedTab === 'posts'" (click)="changeTab('posts')">
+        <i class="fas fa-home"></i> My Listings
+      </div>
+      <div class="tab" [class.active]="selectedTab === 'saved'" (click)="changeTab('saved')">
+        <i class="fas fa-bookmark"></i> Saved Properties
+      </div>
+      <div class="tab" [class.active]="selectedTab === 'edit'" (click)="changeTab('edit')">
+        <i class="fas fa-user-edit"></i> Edit Profile
+      </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- My Listings Tab -->
+      <div *ngIf="selectedTab === 'posts'" class="posts-container">
+        <div *ngIf="userPosts.length === 0" class="empty-state">
+          <i class="fas fa-home"></i>
+          <p>You haven't created any listings yet</p>
+          <a routerLink="/create-post" class="create-post-btn">Create a Listing</a>
+        </div>
+
+        <div *ngIf="userPosts.length > 0" class="posts-grid">
+          <app-card *ngFor="let post of userPosts" [apartment]="post"></app-card>
+        </div>
+      </div>
+
+      <!-- Saved Properties Tab -->
+      <div *ngIf="selectedTab === 'saved'" class="saved-container">
+        <div *ngIf="!isLoadingSaved && savedPosts.length === 0" class="empty-state">
+          <i class="fas fa-bookmark"></i>
+          <p>You haven't saved any properties yet</p>
+          <a routerLink="/list" class="browse-btn">Browse Properties</a>
+        </div>
+
+        <div *ngIf="isLoadingSaved" class="loading-saved">
+          <div class="loading-spinner"></div>
+          <p>Loading saved properties...</p>
+        </div>
+
+        <div *ngIf="!isLoadingSaved && savedPosts.length > 0" class="posts-grid">
+          <div *ngFor="let post of savedPosts" class="saved-post-card">
+            <button class="unsave-btn" (click)="savePost(post._id)">
+              <i class="fas fa-trash"></i>
+            </button>
+            <app-card [apartment]="post"></app-card>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Profile Tab -->
+      <div *ngIf="selectedTab === 'edit'" class="edit-container">
+        <div class="profile-edit">
+          <h3>Edit Profile</h3>
+
+          <form (ngSubmit)="updateProfile()">
+            <div class="error-message" *ngIf="errorMessage">
+              {{ errorMessage }}
+            </div>
+
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" [(ngModel)]="profileData.name" required
+                placeholder="Enter your full name">
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" [(ngModel)]="profileData.email" required
+                placeholder="Enter your email">
+            </div>
+
+            <div class="form-group">
+              <label for="password">New Password (leave blank to keep current)</label>
+              <input type="password" id="password" name="password" [(ngModel)]="profileData.password"
+                placeholder="Enter new password">
+            </div>
+
+            <div class="form-group" *ngIf="profileData.password">
+              <label for="confirmPassword">Confirm New Password</label>
+              <input type="password" id="confirmPassword" name="confirmPassword"
+                [(ngModel)]="profileData.confirmPassword" placeholder="Confirm new password">
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="update-btn" [disabled]="isUpdating">
+                <span *ngIf="!isUpdating">Update Profile</span>
+                <span *ngIf="isUpdating">Updating...</span>
+              </button>
+
+              <button type="button" class="logout-btn" (click)="logout()">
+                Logout
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Template -->
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading profile...</p>
+    </div>
+  </ng-template>
+</div>

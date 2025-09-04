@@ -1,0 +1,37 @@
+<div class="listPage">
+    <div class="listContainer">
+        <div class="listWrapper">
+            <!-- أضف event binding للفلاتر -->
+            <app-filter (filtersChanged)="onFiltersChanged($event)"></app-filter>
+            
+            <!-- إضافة loading state -->
+            <div *ngIf="loading" class="loading">
+                <p>Loading properties...</p>
+            </div>
+            
+            <!-- عرض النتائج -->
+            <div *ngIf="!loading">
+                <!-- رسالة عدم وجود نتائج -->
+                <div *ngIf="apartments.length === 0" class="no-results">
+                    <p>No properties found matching your criteria.</p>
+                    <button (click)="getAllPosts()" class="retry-btn">
+                        Show All Properties
+                    </button>
+                </div>
+                
+                <!-- عرض عدد النتائج -->
+                <div *ngIf="apartments.length > 0" class="results-count">
+                    <p>Found {{ apartments.length }} properties</p>
+                </div>
+                
+                <!-- عرض الشقق -->
+                @for(item of apartments; track item._id) {
+                    <app-card [apartment]="item"></app-card>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="mapContainer">
+        <app-map [apartments]="apartments"></app-map>
+    </div>
+</div>

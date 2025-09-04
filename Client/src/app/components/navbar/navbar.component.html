@@ -1,0 +1,48 @@
+<nav>
+  <div class="left">
+    <a class="logo" routerLink="/">
+      <img src="images/logo.png" alt="logo" />
+      <span>Anas Estate</span>
+    </a>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+    <a routerLink="/list" routerLinkActive="active">Properties</a>
+    <a *ngIf="isAuthenticated" routerLink="/create-post" routerLinkActive="active">Add Property</a>
+  </div>
+  <div class="right">
+    <!-- Not authenticated -->
+    <ng-container *ngIf="!isAuthenticated">
+      <a routerLink="/login" routerLinkActive="active">Sign In</a>
+      <a routerLink="/register" routerLinkActive="active" class="sign-up">Sign Up</a>
+    </ng-container>
+    
+    <!-- Authenticated -->
+    <ng-container *ngIf="isAuthenticated">
+      <a routerLink="/profile" routerLinkActive="active">My Profile</a>
+      <a (click)="logout()" class="sign-up">Logout</a>
+    </ng-container>
+    
+    <!-- Mobile menu icon -->
+    <div class="menuIcon" (click)="toggleMenu()">
+      <img src="images/menu.png" alt="menu" />
+    </div>
+    
+    <!-- Mobile menu -->
+    <div [ngClass]="open ? 'menu active' : 'menu'">
+      <a routerLink="/" (click)="toggleMenu()">Home</a>
+      <a routerLink="/list" (click)="toggleMenu()">Properties</a>
+      
+      <!-- Not authenticated mobile -->
+      <ng-container *ngIf="!isAuthenticated">
+        <a routerLink="/login" (click)="toggleMenu()">Sign In</a>
+        <a routerLink="/register" (click)="toggleMenu()">Sign Up</a>
+      </ng-container>
+      
+      <!-- Authenticated mobile -->
+      <ng-container *ngIf="isAuthenticated">
+        <a routerLink="/create-post" (click)="toggleMenu()">Add Property</a>
+        <a routerLink="/profile" (click)="toggleMenu()">My Profile</a>
+        <a (click)="logout(); toggleMenu()">Logout</a>
+      </ng-container>
+    </div>
+  </div>
+</nav>

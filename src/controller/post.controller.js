@@ -59,6 +59,13 @@ exports.updatePost = async (req, res) => {
       await PostDetail.findByIdAndUpdate(post.postDetail, body.postDetail);
     }
 
+    // Handle image uploads if new images are provided
+    let images = post.images || [];
+    if (req.files && req.files.length > 0) {
+      // Replace existing images with new ones
+      images = req.files.map(file => `/uploads/posts/${file.filename}`);
+    }
+
     // Update the post with new data
     const updatedPost = await Post.findByIdAndUpdate(
       id,
@@ -66,6 +73,7 @@ exports.updatePost = async (req, res) => {
         ...body,
         postType: postTypeId,
         postDetail: postDetailId,
+        images: images, // Update image paths if new images were uploaded
         // Don't update userId as it should remain the same
       },
       { new: true } // Return the updated document
@@ -106,23 +114,40 @@ exports.addPost = async (req, res) => {
 
   try {
     if (!userIdToken) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: No user ID provided" });
+      return res.status(401).json({ message: "Unauthorized: No user ID provided" });
     }
     if (!body.type || typeof body.type !== "string") {
       return res.status(400).json({ message: "Invalid type provided" });
     }
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "At least one image is required" });
+    }
+    if (!body.postDetail) {
+      return res.status(400).json({ message: "postDetail is required" });
+    }
+
+    try {
+      body.postDetail = JSON.parse(body.postDetail);
+    } catch (err) {
+      return res.status(400).json({ message: "Invalid JSON in postDetail" });
+    }
+    
+    // Process multiple images
+    const imagePaths = req.files.map(file => `/uploads/posts/${file.filename}`);
+
     let postType = await PostType.findOne({ name: body.type });
     if (!postType) {
       postType = await PostType.create({ name: body.type });
     }
+
     const postDetail = await PostDetail.create(body.postDetail);
+
     const newPost = await Post.create({
       ...body,
       userId: userIdToken,
       postDetail: postDetail._id,
       postType: postType._id,
+      images: imagePaths,
     });
 
     const fullPost = await Post.findById(newPost._id)
@@ -135,3 +160,39 @@ exports.addPost = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+exports.getFilterOptions = async (req, res) => {
+  try {
+    // جلب المدن المتاحة
+    const cities = await Post.distinct('city');
+    
+    // جلب أنواع العقارات
+    const types = await PostType.find().select('name');
+    
+    // جلب نطاق الأسعار
+    const priceRange = await Post.aggregate([
+      {
+        $group: {
+          _id: null,
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' }
+        }
+      }
+    ]);
+
+    // جلب عدد الغرف المتاح
+    const bedrooms = await Post.distinct('bedroom');
+
+    res.status(200).json({
+      cities: cities.filter(city => city), // إزالة القيم الفارغة
+      types: types.map(type => type.name),
+      priceRange: priceRange[0] || { minPrice: 0, maxPrice: 1000000 },
+      bedrooms: bedrooms.sort((a, b) => a - b)
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ message: "Failed to get filter options" });
+  }
+};
+

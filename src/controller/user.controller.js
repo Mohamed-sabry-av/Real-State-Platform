@@ -25,26 +25,32 @@ exports.getUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   const id = req.params.id;
   const tokenUserId = req.userId;
-  const { password, avatar, ...inputs } = req.body;
+  const { password, ...inputs } = req.body;
 
   if (id !== tokenUserId) return res.status(401).json("Unauthorized");
 
-  const updateFields = { avatar, ...inputs };
+  const updateFields = { ...inputs };
   try {
+    // Handle password update if provided
     if (password) {
       updateFields.password = await bcrypt.hash(password, 10);
+    }
+
+    // Handle avatar upload if provided
+    if (req.file) {
+      updateFields.avatar = `/uploads/users/${req.file.filename}`;
     }
 
     const updateUser = await User.findByIdAndUpdate(id, {
       $set: updateFields
     }, { new: true });
 
-
-    const { password: userPassword, ...rest } = updateUser;
+    // Remove password from response
+    const { password: userPassword, ...rest } = updateUser._doc || updateUser;
     res.status(200).json(rest);
   } catch (err) {
-    console.log("cant update user");
-    res.status(500).json(err);
+    console.log("cant update user", err);
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -122,3 +128,16 @@ exports.getNotificationNumber = async (req, res) => {
     res.status(500).json({ message: "Internal server error", error: err.message });
   }
 }
+
+exports.getSavedPosts = async (req, res) => {
+  const tokenUserId = req.userId;
+  try {
+    const savedPostsRecords = await SavedPost.find({ userId: tokenUserId });
+    const postIds = savedPostsRecords.map(record => record.postId);
+    const posts = await Post.find({ _id: { $in: postIds } });
+    res.status(200).json(posts);
+  } catch (err) {
+    console.error("Error in getSavedPosts:", err);
+    res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};

@@ -1,0 +1,243 @@
+/* map.component.scss */
+:host {
+  display: block;
+  height: 100%;
+  position: relative;
+}
+
+.map-wrapper {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  position: relative;
+}
+
+.map-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  z-index: 1000;
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+  }
+  
+  p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+  }
+}
+
+.map-error {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  background: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ffeaa7;
+  z-index: 1001;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  
+  i {
+    margin-right: 8px;
+  }
+}
+
+/* map.component.scss (continued) */
+
+.map-debug {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  z-index: 1001;
+  
+  .error-count {
+    color: #ff6b6b;
+    font-weight: bold;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhanced popup styles */
+:host ::ng-deep .leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  
+  .popup-content {
+    display: flex;
+    gap: 12px;
+    max-width: 300px;
+    padding: 4px;
+    
+    .popup-img {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+    
+    .textContainer {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0; // Allow text to wrap
+    }
+    
+    .popup-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin: 0;
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .popup-details {
+      font-size: 0.8rem;
+      color: #7f8c8d;
+      margin: 0;
+      font-weight: 500;
+    }
+    
+    .popup-price {
+      font-size: 0.9rem;
+      color: #27ae60;
+      font-weight: bold;
+      margin: 0;
+    }
+    
+    .popup-address {
+      font-size: 0.75rem;
+      color: #95a5a6;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+:host ::ng-deep .leaflet-popup-tip {
+  background: white;
+}
+
+:host ::ng-deep .leaflet-popup-close-button {
+  color: #7f8c8d !important;
+  font-size: 18px !important;
+  padding: 4px 8px !important;
+  
+  &:hover {
+    color: #2c3e50 !important;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .map-error, .map-debug {
+    font-size: 12px;
+    padding: 8px;
+  }
+  
+  :host ::ng-deep .leaflet-popup-content-wrapper .popup-content {
+    max-width: 250px;
+    gap: 8px;
+    
+    .popup-img {
+      width: 60px;
+      height: 45px;
+    }
+    
+    .popup-title {
+      font-size: 0.85rem;
+    }
+    
+    .popup-details, .popup-price {
+      font-size: 0.75rem;
+    }
+    
+    .popup-address {
+      font-size: 0.7rem;
+    }
+  }
+}
+
+/* Custom marker cluster styles (if using clustering) */
+:host ::ng-deep .marker-cluster-small {
+  background-color: rgba(181, 226, 140, 0.6);
+  border: 2px solid rgba(110, 204, 57, 0.6);
+}
+
+:host ::ng-deep .marker-cluster-medium {
+  background-color: rgba(241, 211, 87, 0.6);
+  border: 2px solid rgba(240, 194, 12, 0.6);
+}
+
+:host ::ng-deep .marker-cluster-large {
+  background-color: rgba(253, 156, 115, 0.6);
+  border: 2px solid rgba(241, 128, 23, 0.6);
+}
+
+/* Map controls styling */
+:host ::ng-deep .leaflet-control-zoom {
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  a {
+    border-radius: 0 !important;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: #f8f9fa !important;
+    }
+  }
+}
+
+:host ::ng-deep .leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: 4px;
+  font-size: 10px;
+}

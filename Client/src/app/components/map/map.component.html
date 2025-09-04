@@ -1,0 +1,26 @@
+<!-- map.component.html -->
+<div class="map-wrapper">
+  <div [id]="mapId" [style.height]="height" class="map-container"></div>
+  
+  <!-- Loading overlay -->
+  <div class="map-loading" *ngIf="loading">
+    <div class="loading-spinner"></div>
+    <p>Loading map...</p>
+  </div>
+  
+  <!-- Error message -->
+  <div class="map-error" *ngIf="errorMessage && !loading">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span>{{ errorMessage }}</span>
+  </div>
+  
+  <!-- Debug info (remove in production) -->
+  <div class="map-debug" *ngIf="debugInfo.totalApartments > 0 && !loading">
+    <small>
+      {{ debugInfo.validMarkers }}/{{ debugInfo.totalApartments }} properties shown
+      <span *ngIf="debugInfo.invalidMarkers > 0" class="error-count">
+        ({{ debugInfo.invalidMarkers }} with issues)
+      </span>
+    </small>
+  </div>
+</div>

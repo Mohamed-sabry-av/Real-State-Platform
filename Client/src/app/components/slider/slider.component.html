@@ -1,0 +1,16 @@
+<div class="slider">
+    @if(showFullSlider){
+    <app-full-slider [image]="currentImage" [next]="showNextImage.bind(this)" [prev]="showPrevImage.bind(this)"
+        (close)="closeSlider()">
+    </app-full-slider>
+    }
+
+    <div class="bigImage" (click)="openSlider()">
+        <img [src]="currentImage" alt="">
+    </div>
+    <div class="smallImages">
+        @for(img of absoluteImages ; track img){
+        <img [src]="img" alt=""  (click)="changeImage(img)" [class.selected]="img===currentImage">
+        }
+    </div>
+</div>

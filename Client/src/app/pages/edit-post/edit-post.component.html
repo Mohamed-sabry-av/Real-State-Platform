@@ -1,0 +1,151 @@
+<div class="edit-container">
+  <div class="edit-card">
+    <h2>Edit Property</h2>
+    
+    <div *ngIf="isLoading" class="loading">
+      <p>Loading property data...</p>
+    </div>
+    
+    <form *ngIf="!isLoading" (ngSubmit)="onSubmit()" class="simple-form">
+      
+      <!-- Basic Info -->
+      <div class="section">
+        <h3>Basic Information</h3>
+        
+        <div class="row">
+          <div class="field">
+            <label>Title *</label>
+            <input type="text" [(ngModel)]="formData.title" name="title" required>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="field">
+            <label>Price *</label>
+            <input type="number" [(ngModel)]="formData.price" name="price" required>
+          </div>
+          <div class="field">
+            <label>Type *</label>
+            <select [(ngModel)]="formData.type" name="type" required>
+              <option *ngFor="let type of types" [value]="type">{{type | titlecase}}</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="field">
+            <label>Category *</label>
+            <select [(ngModel)]="formData.category" name="category" required>
+              <option *ngFor="let cat of categories" [value]="cat">{{cat | titlecase}}</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Property Type *</label>
+            <select [(ngModel)]="formData.propertyType" name="propertyType" required>
+              <option *ngFor="let prop of propertyTypes" [value]="prop">{{prop | titlecase}}</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="field full">
+            <label>Description *</label>
+            <textarea [(ngModel)]="formData.description" name="description" required rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Location -->
+      <div class="section">
+        <h3>Location</h3>
+        
+        <div class="row">
+          <div class="field">
+            <label>Address *</label>
+            <input type="text" [(ngModel)]="formData.address" name="address" required>
+          </div>
+          <div class="field">
+            <label>City *</label>
+            <input type="text" [(ngModel)]="formData.city" name="city" required>
+          </div>
+        </div>
+        
+        <div class="map-section">
+          <label>Property Location *</label>
+          <div class="map-container">
+            <app-map 
+              [latitude]="formData.latitude" 
+              [longitude]="formData.longitude"
+              [draggable]="true"
+              (markerDragEnd)="onMapUpdate($event)">
+            </app-map>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Property Details -->
+      <div class="section">
+        <h3>Property Details</h3>
+        
+        <div class="row">
+          <div class="field">
+            <label>Bedrooms *</label>
+            <input type="number" [(ngModel)]="formData.bedroom" name="bedroom" required min="0">
+          </div>
+          <div class="field">
+            <label>Bathrooms *</label>
+            <input type="number" [(ngModel)]="formData.bathroom" name="bathroom" required min="0">
+          </div>
+          <div class="field">
+            <label>Size (sq ft)</label>
+            <input type="number" [(ngModel)]="formData.size" name="size" min="0">
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="field full">
+            <label>Detailed Description</label>
+            <textarea [(ngModel)]="formData.detailedDescription" name="detailedDescription" rows="3"></textarea>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="field">
+            <label>Utilities</label>
+            <input type="text" [(ngModel)]="formData.utilities" name="utilities" placeholder="e.g., Water, Electricity, Gas">
+          </div>
+          <div class="field">
+            <label>Pet Policy</label>
+            <input type="text" [(ngModel)]="formData.petPolicy" name="petPolicy" placeholder="e.g., No pets, Cats allowed">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Images -->
+      <div class="section">
+        <h3>Images</h3>
+        
+        <div class="current-images" *ngIf="currentImages.length > 0">
+          <p>Current Images:</p>
+          <div class="image-grid">
+            <img *ngFor="let img of currentImages" [src]="'http://localhost:3000' + img" alt="Property">
+          </div>
+        </div>
+        
+        <div class="field">
+          <label>Upload New Images (will replace current ones)</label>
+          <input type="file" (change)="onImagesSelected($event)" multiple accept="image/*">
+        </div>
+      </div>
+      
+      <!-- Actions -->
+      <div class="actions">
+        <button type="button" class="btn-cancel" routerLink="/profile">Cancel</button>
+        <button type="submit" class="btn-save" [disabled]="isSubmitting">
+          {{isSubmitting ? 'Saving...' : 'Save Changes'}}
+        </button>
+      </div>
+      
+    </form>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+<div class="card">
+    <div class="imgContainer">
+        <a routerLink="/post/{{apartment?._id}}">
+
+            <img [src]="apartment?.images && apartment?.images!.length > 0 ? getImageUrl(apartment?.images![0]) : '/images/default-property.jpg'"
+                alt="{{apartment?.title}}">
+        </a>
+    </div>
+    <div class="textContainer">
+        <a routerLink="/post/{{apartment?._id}}">
+
+            <h2 class="title">
+                {{apartment?.title}}
+            </h2>
+        </a>
+        <p class="address">
+            <img src="/images/pin.png" alt="location">
+            <span>{{apartment?.address}}</span>
+        </p>
+        <p class="price">
+            <span>$ {{apartment?.price}}</span>
+        </p>
+        <div class="botton">
+            <div class="features">
+                <div class="feature">
+                    <img src="/images/bed.png" alt="bedroom">
+                    <span>{{apartment?.bedroom}} bedroom</span>
+                </div>
+                <div class="feature">
+                    <img src="/images/bath.png" alt="bathroom">
+                    <span>{{apartment?.bathroom}} bathroom</span>
+                </div>
+            </div>
+            <div class="icons">
+                <div class="icon" *ngIf="apartment" (click)="savePost(apartment._id)">
+                    <img src="/images/save.png" alt="save">
+                </div>
+                <div class="icon">
+                    <img src="/images/chat.png" alt="chat">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
